@@ -1,0 +1,90 @@
+@startuml
+header Proyek SIMK Klinik - SRS Use Case Diagram
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Admin IT" as adm
+actor "Dokter" as dr
+actor "Perawat" as nrs
+actor "Kasir" as ksr
+actor "Apoteker" as apt
+
+rectangle "Sistem Informasi Manajemen Klinik (SIMK)" {
+  ' Use Cases Umum
+  usecase "Login & Manajemen Sesi (JWT)" as UC1
+  usecase "Monitoring Antrean Real-time" as UC2
+  
+  ' Modul Registrasi & Admin
+  usecase "Registrasi Pasien & Validasi NIK" as UC3
+  usecase "Kelola Hak Akses (RBAC)" as UC4
+  usecase "Kelola Data Master (Obat/ICD-10)" as UC5
+  usecase "Backup & Restore Database" as UC6
+  usecase "Pantau Laporan Pendapatan (Eksekutif)" as UC7
+
+  ' Modul Triase (Perawat)
+  usecase "Input Tanda Vital (TTV)" as UC8
+  usecase "Penentuan Skala Urgensi (Auto-flagging)" as UC9
+  usecase "Update Status Antrean (State Machine)" as UC10
+
+  ' Modul Pemeriksaan (Dokter)
+  usecase "Input Rekam Medis (SOAP)" as UC11
+  usecase "Pencarian Diagnosa ICD-10" as UC12
+  usecase "Input Tindakan Medis & Prosedur" as UC13
+  usecase "Pembuatan E-Resep Multi-item" as UC14
+  usecase "Cetak Surat Sakit & Rujukan" as UC15
+  usecase "Terima Notifikasi Pasien Gawat" as UC16
+
+  ' Modul Kasir
+  usecase "Kalkulasi Tagihan Otomatis" as UC17
+  usecase "Proses Pembayaran (Tunai/EDC/QRIS)" as UC18
+  usecase "Cetak Kwitansi & Invoice" as UC19
+  usecase "Rekapitulasi Closing Shift" as UC20
+
+  ' Modul Farmasi
+  usecase "Validasi & Verifikasi Resep" as UC21
+  usecase "Manajemen Stok Obat (FIFO)" as UC22
+  usecase "Setup Minimum Stock Alert" as UC23
+  usecase "Tracking Batch & Tanggal Expired" as UC24
+}
+
+' Relasi Admin
+adm --> UC1
+adm --> UC4
+adm --> UC5
+adm --> UC6
+adm --> UC7
+
+' Relasi Perawat
+nrs --> UC1
+nrs --> UC2
+nrs --> UC3
+nrs --> UC8
+nrs --> UC9
+nrs --> UC10
+
+' Relasi Dokter
+dr --> UC1
+dr --> UC2
+dr --> UC11
+dr --> UC12
+dr --> UC13
+dr --> UC14
+dr --> UC15
+dr --> UC16
+
+' Relasi Kasir
+ksr --> UC1
+ksr --> UC17
+ksr --> UC18
+ksr --> UC19
+ksr --> UC20
+
+' Relasi Apoteker
+apt --> UC1
+apt --> UC14
+apt --> UC21
+apt --> UC22
+apt --> UC23
+apt --> UC24
+
+@enduml
