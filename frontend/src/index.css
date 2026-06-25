@@ -1,1 +1,12 @@
 @import "tailwindcss";
+
+@theme {
+    /* struktur warna primary (default dan dark) */
+    --color-primary: #2E86C1;
+    --color-primary-dark: #1A5276;
+
+    /* warna status */
+    --color-success: #1E8449;
+    --color-warning: #D35400;
+    --color-danger: #922B21;
+}
