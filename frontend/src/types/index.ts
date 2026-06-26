@@ -19,3 +19,23 @@ export interface Examination {
   treatmentPlan: string;
   examinationDate: Date;
 }
+
+export const PatientStatus = {
+  WAITING_TRIAGE: 'WAITING_TRIAGE',
+  TRIAGE: 'TRIAGE',
+  WAITING_DOCTOR: 'WAITING_DOCTOR',
+  EXAMINATION: 'EXAMINATION',
+  WAITING_CASHIER: 'WAITING_CASHIER',
+  DONE: 'DONE',
+} as const;
+
+export type PatientStatus = (typeof PatientStatus)[keyof typeof PatientStatus];
+
+export interface QueueItem {
+  id: string;
+  name: string;
+  queueNumber: string;
+  status: PatientStatus; 
+  registeredAt: string;
+  complaint: string;
+}
