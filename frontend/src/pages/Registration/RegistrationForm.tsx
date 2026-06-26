@@ -2,50 +2,45 @@ import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-// 1. Definisikan skema validasi Yup
+// PERBAIKAN: Gunakan .trim() agar teks kosong "" dianggap sebagai error oleh .required()
 const schema = yup.object().shape({
-  nama: yup.string().required('Nama tidak boleh kosong'),
+  nama: yup.string().trim().required('Nama tidak boleh kosong'),
   nik: yup.string()
     .matches(/^([0-9]{16})$/, 'NIK harus 16 angka')
     .required('NIK tidak boleh kosong'),
-  tanggalLahir: yup.string().required('Tanggal lahir tidak boleh kosong'), 
-  // Catatan: input type="date" mengirim nilai sebagai string 'YYYY-MM-DD'
+  tanggalLahir: yup.string().trim().required('Tanggal lahir tidak boleh kosong'),
 });
 
-// 2. Buat tipe data otomatis dari skema Yup agar TypeScript aman
 type RegistrationFormValues = yup.InferType<typeof schema>;
 
 const RegistrationForm = () => {
-  // 3. Ambil 'formState: { errors }' untuk menampilkan pesan error
   const { register, handleSubmit, formState: { errors } } = useForm<RegistrationFormValues>({
     resolver: yupResolver(schema),
   });
 
-  // 4. Berikan tipe data 'RegistrationFormValues' pada parameter data
   const onSubmit = async (data: RegistrationFormValues) => {
     console.log(data);
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} className="p-4">
       <div>
-        <label>Nama:</label>
-        <input { ...register('nama') } type="text" />
-        {/* 5. Cara menampilkan pesan error yang benar */}
+        <label htmlFor="nama-input">Nama:</label>
+        <input id="nama-input" { ...register('nama') } type="text" />
         {errors.nama && <div style={{ color: 'red' }}>{errors.nama.message}</div>}
       </div>
       <br />
 
       <div>
-        <label>NIK:</label>
-        <input { ...register('nik') } type="text" />
+        <label htmlFor="nik-input">NIK:</label>
+        <input id="nik-input" { ...register('nik') } type="text" />
         {errors.nik && <div style={{ color: 'red' }}>{errors.nik.message}</div>}
       </div>
       <br />
 
       <div>
-        <label>Tanggal Lahir:</label>
-        <input { ...register('tanggalLahir') } type="date" />
+        <label htmlFor="dob-input">Tanggal Lahir:</label>
+        <input id="dob-input" { ...register('tanggalLahir') } type="date" />
         {errors.tanggalLahir && <div style={{ color: 'red' }}>{errors.tanggalLahir.message}</div>}
       </div>
       <br />
