@@ -1,1 +1,33 @@
-// Kode React baru atau modifikasi berdasarkan gabungan antara dokumen panduan dan kode-kode lama yang sudah ada pada proyek ini.
+import React, { useState } from 'react';
+
+function App() {
+  const [input, setInput] = useState('');
+  const [result, setResult] = useState('');
+
+  const handleInputChange = (e) => {
+    setInput(e.target.value);
+  };
+
+  const handleSubmit = () => {
+    if (input.trim() === '') {
+      setResult('Input tidak boleh kosong');
+      return;
+    }
+
+    // Simulasi proses pencarian
+    setTimeout(() => {
+      setResult(`Hasil pencarian untuk "${input}": [1, 2, 3]`);
+    }, 1000);
+  };
+
+  return (
+    <div>
+      <h1>Search Engine</h1>
+      <input type="text" value={input} onChange={handleInputChange} />
+      <button onClick={handleSubmit}>Cari</button>
+      {result && <p>{result}</p>}
+    </div>
+  );
+}
+
+export default App;
