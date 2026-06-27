@@ -1,0 +1,54 @@
+import React, { useState } from 'react';
+import axios from 'axios';
+
+const Main = () => {
+  const [diagnosis, setDiagnosis] = useState('');
+  const [nik, setNik] = useState('');
+
+  const handleDiagnosisChange = (e) => {
+    setDiagnosis(e.target.value);
+  };
+
+  const handleNikChange = (e) => {
+    setNik(e.target.value);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      await axios.post('/api/diagnosis', { diagnosis, nik });
+      alert('Data diinput berhasil!');
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Terjadi kesalahan saat menginput data.');
+    }
+  };
+
+  return (
+    <div>
+      <h1>Input Data Klinis</h1>
+      <form onSubmit={handleSubmit}>
+        <label htmlFor="diagnosis">Diagnosis:</label>
+        <input
+          type="text"
+          id="diagnosis"
+          value={diagnosis}
+          onChange={handleDiagnosisChange}
+        />
+        <br />
+        <label htmlFor="nik">NIK:</label>
+        <input
+          type="text"
+          id="nik"
+          value={nik}
+          onChange={handleNikChange}
+        />
+        <br />
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  );
+};
+
+export default Main;
