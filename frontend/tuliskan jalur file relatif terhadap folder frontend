@@ -1,33 +1,19 @@
-import React, { useState } from 'react';
+# Scan the project for vulnerabilities and security issues
 
-function App() {
-  const [input, setInput] = useState('');
-  const [result, setResult] = useState('');
+# Step 1: Run OWASP ZAP to scan SQLi & XSS
+zap.sh -r http://localhost:3000 -s -f json > zap_results.json
 
-  const handleInputChange = (e) => {
-    setInput(e.target.value);
-  };
+# Step 2: Analyze the results of OWASP ZAP
+cat zap_results.json | jq '.alerts[] | {id, name, description, severity, confidence}'
 
-  const handleSubmit = () => {
-    if (input.trim() === '') {
-      setResult('Input tidak boleh kosong');
-      return;
-    }
+# Step 3: Run User Acceptance Testing (UAT)
+# This step involves testing the application with real users to ensure it meets their requirements and is secure
 
-    // Simulasi proses pencarian
-    setTimeout(() => {
-      setResult(`Hasil pencarian untuk "${input}": [1, 2, 3]`);
-    }, 1000);
-  };
+# Step 4: Bug Fixing & Fine-Tuning
+# This step involves fixing any identified vulnerabilities and optimizing queries for performance
 
-  return (
-    <div>
-      <h1>Search Engine</h1>
-      <input type="text" value={input} onChange={handleInputChange} />
-      <button onClick={handleSubmit}>Cari</button>
-      {result && <p>{result}</p>}
-    </div>
-  );
-}
+# Step 5: Provisioning Cloud (VM)
+# This step involves setting up a cloud server and configuring it for production use
 
-export default App;
+# Step 6: Containerization (Docker)
+# This step involves building and pushing an image to a Docker registry and deploying the application in a containerized environment
