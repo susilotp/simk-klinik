@@ -1,19 +1,35 @@
-# Scan the project for vulnerabilities and security issues
+import React, { useState } from 'react';
 
-# Step 1: Run OWASP ZAP to scan SQLi & XSS
-zap.sh -r http://localhost:3000 -s -f json > zap_results.json
+const ICD10Diagnosis = () => {
+  const [diagnoses, setDiagnoses] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
-# Step 2: Analyze the results of OWASP ZAP
-cat zap_results.json | jq '.alerts[] | {id, name, description, severity, confidence}'
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
+  };
 
-# Step 3: Run User Acceptance Testing (UAT)
-# This step involves testing the application with real users to ensure it meets their requirements and is secure
+  const filteredDiagnoses = diagnoses.filter((diagnosis) =>
+    diagnosis.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-# Step 4: Bug Fixing & Fine-Tuning
-# This step involves fixing any identified vulnerabilities and optimizing queries for performance
+  return (
+    <div>
+      <h1>ICD-10 Diagnosis</h1>
+      <input
+        type="text"
+        placeholder="Search ICD-10 diagnosis..."
+        value={searchQuery}
+        onChange={handleSearch}
+      />
+      <ul>
+        {filteredDiagnoses.map((diagnosis) => (
+          <li key={diagnosis.id}>
+            {diagnosis.name} ({diagnosis.code})
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
-# Step 5: Provisioning Cloud (VM)
-# This step involves setting up a cloud server and configuring it for production use
-
-# Step 6: Containerization (Docker)
-# This step involves building and pushing an image to a Docker registry and deploying the application in a containerized environment
+export default ICD10Diagnosis;
