@@ -1,64 +1,175 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const PasienForm = () => {
-  const [nik, setNik] = useState('');
-  const [nama, setNama] = useState('');
-  const [alamat, setAlamat] = useState('');
-  const [noTelp, setNoTelp] = useState('');
-  const [antrian, setAntrian] = useState(0);
+  // Menyatukan seluruh field ke dalam satu state objek agar rapi
+  const [formData, setFormData] = useState({
+    nik: '',
+    nama: '',
+    alamat: '',
+    noTelp: '',
+    dateOfBirth: '',
+    symptoms: '',
+    diagnosis: '',
+  });
+
+  const [antrian, setAntrian] = useState(null);
   const [patientId, setPatientId] = useState(null);
+
+  // Handler universal untuk mendeteksi perubahan semua input teks dan textarea
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const formData = new FormData();
-    formData.append('nik', nik);
-    formData.append('nama', nama);
-    formData.append('alamat', alamat);
-    formData.append('noTelp', noTelp);
+
+    // Menggabungkan seluruh data ke dalam objek FormData untuk dikirim ke API
+    const dataToSend = new FormData();
+    dataToSend.append('nik', formData.nik);
+    dataToSend.append('nama', formData.nama); // Mewakili field name
+    dataToSend.append('alamat', formData.alamat);
+    dataToSend.append('noTelp', formData.noTelp);
+    dataToSend.append('dateOfBirth', formData.dateOfBirth);
+    dataToSend.append('symptoms', formData.symptoms);
+    dataToSend.append('diagnosis', formData.diagnosis);
 
     try {
-      const response = await axios.post('/patients', formData);
-      setPatientId(response.data.patientId);
-      setAntrian(response.data.antrian);
-      toast.success(`Nomor antrian ${antrian} diterima!`, {
+      const response = await axios.post('/patients', dataToSend);
+      
+      const serverPatientId = response.data.patientId;
+      const serverAntrian = response.data.antrian;
+
+      setPatientId(serverPatientId);
+      setAntrian(serverAntrian);
+
+      // Gunakan serverAntrian langsung agar nomor antrean akurat saat toast muncul
+      toast.success(`Nomor antrian ${serverAntrian} diterima!`, {
         position: 'top-right',
         autoClose: 2000,
         closeOnClick: true,
-        pauseBeforeOpening: 500,
       });
-      window.location.href = `/confirmation/${patientId}`;
+
+      // Menunggu animasi toast selesai (2 detik) sebelum pindah ke halaman konfirmasi
+      setTimeout(() => {
+        window.location.href = `/confirmation/${serverPatientId}`;
+      }, 2000);
+
     } catch (error) {
       toast.error('Gagal mengirimkan data pasien', {
         position: 'top-right',
         autoClose: 2000,
         closeOnClick: true,
-        pauseBeforeOpening: 500,
       });
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label>Nik:</label>
-        <input type="text" value={nik} onChange={(event) => setNik(event.target.value)} />
-      </div>
-      <div>
-        <label>Nama:</label>
-        <input type="text" value={nama} onChange={(event) => setNama(event.target.value)} />
-      </div>
-      <div>
-        <label>Alamat:</label>
-        <input type="text" value={alamat} onChange={(event) => setAlamat(event.target.value)} />
-      </div>
-      <div>
-        <label>No. Telp:</label>
-        <input type="text" value={noTelp} onChange={(event) => setNoTelp(event.target.value)} />
-      </div>
-      <button type="submit">Submit</button>
-    </form>
+    <div style={{ padding: '20px', maxWidth: '500px', margin: '0 auto' }}>
+      <ToastContainer />
+      <h2>Formulir Pendaftaran Pasien</h2>
+      
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>NIK:</label>
+          <br />
+          <input 
+            type="text" 
+            name="nik" 
+            value={formData.nik} 
+            onChange={handleChange} 
+            required 
+          />
+        </div>
+        <br />
+
+        <div>
+          <label>Nama Lengkap:</label>
+          <br />
+          <input 
+            type="text" 
+            name="nama" 
+            value={formData.nama} 
+            onChange={handleChange} 
+            required 
+          />
+        </div>
+        <br />
+
+        <div>
+          <label>Tanggal Lahir:</label>
+          <br />
+          <input 
+            type="date" 
+            name="dateOfBirth" 
+            value={formData.dateOfBirth} 
+            onChange={handleChange} 
+            required 
+          />
+        </div>
+        <br />
+
+        <div>
+          <label>Alamat Tinggal:</label>
+          <br />
+          <input 
+            type="text" 
+            name="alamat" 
+            value={formData.alamat} 
+            onChange={handleChange} 
+          />
+        </div>
+        <br />
+
+        <div>
+          <label>No. Telepon / HP:</label>
+          <br />
+          <input 
+            type="text" 
+            name="noTelp" 
+            value={formData.noTelp} 
+            onChange={handleChange} 
+          />
+        </div>
+        <br />
+
+        <div>
+          <label>Gejala yang Dirasakan:</label>
+          <br />
+          <textarea 
+            name="symptoms" 
+            value={formData.symptoms} 
+            onChange={handleChange} 
+          />
+        </div>
+        <br />
+
+        <div>
+          <label>Diagnosis Awal:</label>
+          <br />
+          <textarea 
+            name="diagnosis" 
+            value={formData.diagnosis} 
+            onChange={handleChange} 
+          />
+        </div>
+        <br />
+
+        <button type="submit">Kirim Data Pasien</button>
+      </form>
+
+      {antrian && (
+        <div style={{ marginTop: '20px', fontWeight: 'bold', color: 'green' }}>
+          <p>Nomor Antrean Anda: {antrian}</p>
+        </div>
+      )}
+    </div>
   );
 };
 
